@@ -1,1 +1,5 @@
-export type TAppState = {};
+import { Voice } from '../server';
+
+export type TAppState = {
+  voices: Voice[];
+};
