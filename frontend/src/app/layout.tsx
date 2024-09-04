@@ -1,9 +1,9 @@
+import Header from '@/components/header';
+import Provider from '@/components/provider';
+import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Header from '@/components/header';
-import { cn } from '@/lib/utils';
-import Provider from '@/components/provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,15 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn(
-          inter.className,
-          'mx-auto px-6 md:max-w-7xl md:space-y-4'
-        )}
-      >
+      <body className={cn(inter.className)}>
         <Provider>
-          <Header />
-          <div className="">{children}</div>
+          <div className="mx-auto px-6 md:max-w-7xl md:space-y-4">
+            <Header />
+            <div>{children}</div>
+          </div>
         </Provider>
       </body>
     </html>

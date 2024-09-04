@@ -5,7 +5,7 @@ import { buttonVariants } from './ui/button';
 
 export default function Header() {
   return (
-    <div className="py-5 flex items-center justify-between">
+    <div className="mx-auto flex items-center justify-between py-5">
       <Link href={'/'}>
         <Image
           src="/logo.svg"
