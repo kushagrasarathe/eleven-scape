@@ -1,5 +1,6 @@
 import { GENERATE_TEXT_TO_SPEECH } from '@/lib/constants';
 import { elevenlabsRequestHeaders } from '@/lib/constants/api';
+import { TGenerateSpeechSchema } from '@/lib/validations/generate-speech';
 import { useAppDispatch } from '@/redux/hooks';
 import { appActions } from '@/redux/slices/app-slice';
 import { useMutation } from '@tanstack/react-query';
@@ -8,7 +9,7 @@ import axios, { AxiosError } from 'axios';
 export const useGenerateTextToSpeechMutation = (voice_id: string) => {
   const dispatch = useAppDispatch();
 
-  const generateTextToSpeech = async (payload: { text: string }) => {
+  const generateTextToSpeech = async (payload: TGenerateSpeechSchema) => {
     const { data } = await axios.post(
       `https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`,
       JSON.stringify(payload),

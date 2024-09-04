@@ -1,3 +1,4 @@
+import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Provider from '@/components/provider';
 import { cn } from '@/lib/utils';
@@ -21,9 +22,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(inter.className)}>
         <Provider>
-          <div className="mx-auto px-6 md:max-w-7xl md:space-y-4">
+          <div className="mx-auto flex min-h-screen w-full flex-col px-6 md:max-w-7xl md:gap-y-4">
             <Header />
             <div>{children}</div>
+            <div className="mt-auto">
+              <Footer />
+            </div>
           </div>
         </Provider>
       </body>

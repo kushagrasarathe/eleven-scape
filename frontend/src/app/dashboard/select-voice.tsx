@@ -68,7 +68,7 @@ export default function SelectVoice() {
             className="border-b-1 sticky -left-0.5 -top-1 mb-1 w-full rounded-none border-x-0 border-t-0 text-sm"
           />
           {isFetching && (
-            <div className="flex items-center justify-center py-2">
+            <div className="flex items-center justify-center py-2 text-sm text-gray-700">
               <span>Loading...</span>
             </div>
           )}
@@ -116,7 +116,7 @@ const VoiceSelectItem: React.FC<VoiceSelectItemProps> = ({
 
   return (
     <div
-      className="flex cursor-pointer items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+      className="flex cursor-pointer items-center gap-2 px-2 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800"
       onClick={handleItemClick}
     >
       <div className="group">
@@ -146,7 +146,10 @@ const VoiceSelectItem: React.FC<VoiceSelectItemProps> = ({
       </div>
       <div className="w-3/12 flex-grow truncate text-sm">{voice.name}</div>
       {voice?.use_case && (
-        <Badge variant={'outline'} className="font-normal capitalize">
+        <Badge
+          variant={'outline'}
+          className="bg-gray-100 font-normal capitalize"
+        >
           {voice.use_case.split('_').join(' ')}
         </Badge>
       )}
