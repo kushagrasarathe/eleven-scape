@@ -10,7 +10,8 @@ import {
 } from '@/components/ui/select';
 import { useFetchVoices } from '@/lib/api/hooks/useFetchVoices';
 import { cn, getRandomColor } from '@/lib/utils';
-import { useAppStore } from '@/redux/hooks';
+import { useAppDispatch, useAppStore } from '@/redux/hooks';
+import { appActions } from '@/redux/slices/app-slice';
 import { Voice } from '@/types/server';
 import { useMemo, useState } from 'react';
 
@@ -22,8 +23,8 @@ interface VoiceSelectItemProps {
 }
 
 export default function SelectVoice() {
-  const { voices } = useAppStore();
-  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+  const { voices, selectedVoice } = useAppStore();
+  const dispatch = useAppDispatch();
   const [searchValue, setSearchValue] = useState<string>('');
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
     null
@@ -43,7 +44,7 @@ export default function SelectVoice() {
   };
 
   const handleVoiceSelect = (voice: Voice) => {
-    setSelectedVoice(voice);
+    dispatch(appActions.setSelectedVoice(voice));
   };
 
   return (
@@ -52,7 +53,7 @@ export default function SelectVoice() {
         value={selectedVoice?.voice_id}
         onValueChange={(val) => {
           const voice = voices.find((v) => v.voice_id === val);
-          if (voice) setSelectedVoice(voice);
+          if (voice) dispatch(appActions.setSelectedVoice(voice));
         }}
       >
         <SelectTrigger className="w-full max-w-[450px] rounded-3xl">
@@ -93,6 +94,7 @@ const VoiceSelectItem: React.FC<VoiceSelectItemProps> = ({
   currentlyPlayingId,
   setCurrentlyPlayingId,
 }) => {
+  const dispatch = useAppDispatch();
   const gradientStyle = useMemo(
     () => ({
       background: `linear-gradient(to right, ${getRandomColor()}, ${getRandomColor()})`,
@@ -108,6 +110,7 @@ const VoiceSelectItem: React.FC<VoiceSelectItemProps> = ({
 
   const handleAudioToggle = (isPlaying: boolean) => {
     if (isPlaying) {
+      dispatch(appActions.setCurrentlyPlayingId(voice.voice_id));
       setCurrentlyPlayingId(voice.voice_id);
     } else if (currentlyPlayingId === voice.voice_id) {
       setCurrentlyPlayingId(null);
@@ -145,12 +148,12 @@ const VoiceSelectItem: React.FC<VoiceSelectItemProps> = ({
         </div>
       </div>
       <div className="w-3/12 flex-grow truncate text-sm">{voice.name}</div>
-      {voice?.use_case && (
+      {voice?.labels?.use_case && (
         <Badge
           variant={'outline'}
           className="bg-gray-100 font-normal capitalize"
         >
-          {voice.use_case.split('_').join(' ')}
+          {voice.labels?.use_case.split('_').join(' ')}
         </Badge>
       )}
     </div>

@@ -1,6 +1,7 @@
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Provider from '@/components/provider';
+import { Toaster } from '@/components/ui/sonner';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -28,6 +29,7 @@ export default function RootLayout({
             <div className="mt-auto">
               <Footer />
             </div>
+            <Toaster theme="light" richColors />
           </div>
         </Provider>
       </body>

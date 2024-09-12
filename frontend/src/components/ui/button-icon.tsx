@@ -2,7 +2,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
 import { VariantProps } from 'class-variance-authority';
-import { Loader, LucideIcon } from 'lucide-react';
+import { Loader2, LucideIcon } from 'lucide-react';
 import React from 'react';
 
 export interface ButtonProps
@@ -44,7 +44,7 @@ const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {state === 'loading' ? (
-          <Loader className="icon-size-16 animate-spin" />
+          <Loader2 className="icon-size-16 animate-spin" />
         ) : (
           Icon && <Icon className={'icon-size-16'} />
         )}

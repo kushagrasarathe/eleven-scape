@@ -6,6 +6,8 @@ import { APP } from '../constants';
 const initialState: TAppState = {
   voices: [],
   generatedAudio: null,
+  selectedVoice: null,
+  currentlyPlayingId: null,
 };
 
 const appSlice = createSlice({
@@ -21,6 +23,14 @@ const appSlice = createSlice({
 
     setGeneratedAudio(state, action: PayloadAction<string>) {
       state.generatedAudio = action.payload;
+    },
+
+    setSelectedVoice: (state, action: PayloadAction<Voice | null>) => {
+      state.selectedVoice = action.payload;
+    },
+
+    setCurrentlyPlayingId: (state, action: PayloadAction<string | null>) => {
+      state.currentlyPlayingId = action.payload;
     },
   },
 });

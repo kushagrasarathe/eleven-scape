@@ -22,37 +22,31 @@ export interface Labels {
 }
 
 export interface Voice {
-  public_owner_id: string;
   voice_id: string;
-  date_unix: number;
   name: string;
-  accent: string;
-  gender: string;
-  age: string;
-  descriptive: string;
-  use_case: string;
-  category: string;
-  language: string;
-  description: string;
-  preview_url: string;
-  usage_character_count_1y: number;
-  usage_character_count_7d: number;
-  play_api_usage_character_count_1y: number;
-  cloned_by_count: number;
-  rate: number;
-  free_users_allowed: boolean;
-  live_moderation_enabled: boolean;
-  featured: boolean;
-  notice_period: null | number;
-  instagram_username: null | string;
-  twitter_username: null | string;
-  youtube_username: null | string;
-  tiktok_username: null | string;
-  image_url: string;
+  category?: string;
+  fine_tuning?: FineTuning;
+  labels?: Labels;
+  description?: null | string;
+  preview_url?: string;
+  available_for_tiers?: unknown[];
+  settings?: null | unknown;
+  sharing?: null | unknown;
+  high_quality_base_model_ids?: string[];
+  safety_control?: null | unknown;
+  voice_verification?: {
+    requires_verification: boolean;
+    is_verified: boolean;
+    verification_failures: unknown[];
+    verification_attempts_count: number;
+    language: null | string;
+    verification_attempts: null | unknown;
+  };
+  permission_on_resource?: null | unknown;
+  is_legacy?: boolean;
+  is_mixed?: boolean;
 }
 
 export interface TVoices {
   voices: Array<Voice>;
-  has_more: boolean;
-  last_sort_id: string;
 }

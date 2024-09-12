@@ -16,7 +16,7 @@ export const useFetchVoices = (
 
   const fetchVoices = async () => {
     const { data } = await axios.get<TVoices>(
-      `https://api.elevenlabs.io/v1/shared-voices`,
+      `https://api.elevenlabs.io/v1/voices`,
       {
         headers: elevenlabsRequestHeaders,
       }
@@ -28,17 +28,13 @@ export const useFetchVoices = (
   function onSuccess(resp?: TVoices) {
     if (!!resp?.voices) {
       dispatch(appActions.setAllVoices(resp?.voices));
-      // dispatch(
-      //   appActions.setAllVoices({
-      //     key: `${page}`,
-      //     voices: resp?.voices,
-      //   })
-      // );
     }
   }
 
   // on Error
-  function onError(error: AxiosError) {}
+  function onError(error: AxiosError) {
+    throw error;
+  }
 
   return useQuery({
     queryKey: [VOICES, page, size],

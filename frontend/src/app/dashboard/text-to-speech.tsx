@@ -10,24 +10,32 @@ import {
 import { useAppStore } from '@/redux/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import SelectVoice from './select-voice';
 
 export default function TextToSpeech() {
-  const { generatedAudio } = useAppStore();
+  const { generatedAudio, selectedVoice } = useAppStore();
 
   const {
     mutateAsync: generateSpeech,
     isLoading: isGeneratingSpeech,
     isSuccess: isAudioGenerated,
-  } = useGenerateTextToSpeechMutation('21m00Tcm4TlvDq8ikWAM');
+  } = useGenerateTextToSpeechMutation(selectedVoice?.voice_id as string);
 
   const form = useForm<TGenerateSpeechSchema>({
     resolver: zodResolver(GenerateSpeechSchema),
   });
 
   async function onSubmit(data: TGenerateSpeechSchema) {
-    // await generateSpeech(data);
-    alert(JSON.stringify(data));
+    if (!selectedVoice) {
+      toast.error('Please select a voice');
+      return;
+    }
+    if (!data.text.length) {
+      toast.error('Please enter some text');
+      return;
+    }
+    await generateSpeech(data);
   }
 
   const disableFormSubmission = isGeneratingSpeech;
@@ -42,7 +50,6 @@ export default function TextToSpeech() {
               name="text"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Your Description</FormLabel> */}
                   <FormControl>
                     <div className="gap-3 rounded-2xl p-3.5">
                       <Textarea
