@@ -44,9 +44,9 @@ const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {state === 'loading' ? (
-          <Loader2 className="icon-size-16 animate-spin" />
+          <Loader2 className="size-4 animate-spin" />
         ) : (
-          Icon && <Icon className={'icon-size-16'} />
+          Icon && <Icon className={'size-4'} />
         )}
         {children}
       </Comp>

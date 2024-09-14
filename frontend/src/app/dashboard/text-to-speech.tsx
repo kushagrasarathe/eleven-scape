@@ -2,6 +2,7 @@
 import { ButtonIcon } from '@/components/ui/button-icon';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import WaveAudioPlayer from '@/components/wave-audio-player';
 import { useGenerateTextToSpeechMutation } from '@/lib/api/hooks/useGenerateTextToSpeech';
 import {
   GenerateSpeechSchema,
@@ -41,7 +42,7 @@ export default function TextToSpeech() {
   const disableFormSubmission = isGeneratingSpeech;
 
   return (
-    <>
+    <div className="space-y-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="relative z-10 mx-auto overflow-hidden rounded-xl border border-black/10 bg-white/85 pt-0 shadow backdrop-blur-lg transition-colors focus-within:!border-black md:max-w-3xl">
@@ -89,6 +90,9 @@ export default function TextToSpeech() {
           </div>
         </form>
       </Form>
-    </>
+
+      {generatedAudio && <WaveAudioPlayer audio={generatedAudio} />}
+      {/* <WaveAudioPlayer audio="/alone.mp3" /> */}
+    </div>
   );
 }
