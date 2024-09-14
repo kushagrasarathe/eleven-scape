@@ -1,4 +1,4 @@
-import { TAppState } from '@/types/redux/app-state';
+import { AudioAnnotation, TAppState } from '@/types/redux/app-state';
 import { Voice } from '@/types/server';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { APP } from '../constants';
@@ -8,6 +8,7 @@ const initialState: TAppState = {
   generatedAudio: null,
   selectedVoice: null,
   currentlyPlayingId: null,
+  audioAnnotations: {},
 };
 
 const appSlice = createSlice({
@@ -31,6 +32,29 @@ const appSlice = createSlice({
 
     setCurrentlyPlayingId: (state, action: PayloadAction<string | null>) => {
       state.currentlyPlayingId = action.payload;
+    },
+
+    addAudioAnnotation: (state, action: PayloadAction<AudioAnnotation>) => {
+      const { id, time, text } = action.payload;
+      if (!state.audioAnnotations[time]) {
+        state.audioAnnotations[time] = [];
+      }
+      state.audioAnnotations[time].push({ id, text, time });
+    },
+
+    removeAudioAnnotation: (
+      state,
+      action: PayloadAction<{ time: number; id: string }>
+    ) => {
+      const { time, id } = action.payload;
+      if (state.audioAnnotations[time]) {
+        state.audioAnnotations[time] = state.audioAnnotations[time].filter(
+          (annotation) => annotation.id !== id
+        );
+        if (state.audioAnnotations[time].length === 0) {
+          delete state.audioAnnotations[time];
+        }
+      }
     },
   },
 });

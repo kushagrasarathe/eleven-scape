@@ -91,8 +91,8 @@ export default function TextToSpeech() {
         </form>
       </Form>
 
-      {generatedAudio && <WaveAudioPlayer audio={generatedAudio} />}
-      {/* <WaveAudioPlayer audio="/alone.mp3" /> */}
+      {/* {generatedAudio && <WaveAudioPlayer audio={generatedAudio} />} */}
+      <WaveAudioPlayer audio="/alone.mp3" />
     </div>
   );
 }
