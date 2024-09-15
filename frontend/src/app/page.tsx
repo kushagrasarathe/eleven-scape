@@ -1,3 +1,9 @@
-export default function Home() {
-  return <main>Home page</main>;
+import TextToSpeech from '@/components/text-to-speech';
+
+export default function Dashboard() {
+  return (
+    <div>
+      <TextToSpeech />
+    </div>
+  );
 }

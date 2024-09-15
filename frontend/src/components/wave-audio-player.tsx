@@ -32,7 +32,7 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
   const wavesurferRef = useRef<WaveSurfer | null>(null);
   const regionsRef = useRef<RegionsPlugin | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [zoom, setZoom] = useState(100);
+  const [zoom, setZoom] = useState(20);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [audioReady, setAudioReady] = useState(false);
@@ -103,8 +103,8 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
   }, [initializeWaveSurfer]);
 
   useEffect(() => {
-    if (audioReady && wavesurferRef.current) {
-      wavesurferRef.current.zoom(zoom);
+    if (audioReady && wavesurferRef.current && wavesurferRef.current?.zoom) {
+      wavesurferRef.current?.zoom(zoom);
     }
   }, [zoom, audioReady]);
 
@@ -198,7 +198,7 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
           className={cn(
             'flex min-w-64 transform flex-col items-start justify-between space-y-3 rounded px-2 py-3 transition-all ease-in-out',
             activeAnnotation === time
-              ? 'scale-[1.01] bg-gray-50/90 shadow-lg'
+              ? 'scale-[1.01] bg-gray-100/90 shadow-lg'
               : ''
           )}
         >

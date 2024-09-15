@@ -1,7 +1,5 @@
-import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { buttonVariants } from './ui/button';
 
 export default function Header() {
   return (
@@ -16,12 +14,12 @@ export default function Header() {
           priority
         />
       </Link>
-      <Link
+      {/* <Link
         href={'/dashboard'}
         className={cn(buttonVariants({ variant: 'default' }))}
       >
         Dashboard
-      </Link>
+      </Link> */}
     </div>
   );
 }

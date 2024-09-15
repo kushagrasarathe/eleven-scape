@@ -50,3 +50,37 @@ export interface Voice {
 export interface TVoices {
   voices: Array<Voice>;
 }
+
+// history
+export type Settings = {
+  similarity_boost?: number;
+  stability?: number;
+  style?: number;
+  use_speaker_boost?: boolean;
+};
+
+export type THistory = {
+  history_item_id: string;
+  request_id?: string;
+  voice_id?: string;
+  model_id?: string;
+  voice_name?: string;
+  voice_category?: string;
+  text?: string;
+  date_unix?: number;
+  character_count_change_from?: number;
+  character_count_change_to?: number;
+  content_type?: string;
+  state?: string;
+  settings?: Settings;
+  feedback?: string | null;
+  share_link_id?: string | null;
+  source?: string;
+  alignments?: string | null;
+};
+
+export type THistoryResponse = {
+  history: THistory[];
+  last_history_item_id?: string;
+  has_more?: boolean;
+};

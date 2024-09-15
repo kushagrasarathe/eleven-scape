@@ -1,4 +1,4 @@
-import { Voice } from '../server';
+import { THistory, Voice } from '../server';
 
 export interface AudioAnnotation {
   id: string;
@@ -7,6 +7,7 @@ export interface AudioAnnotation {
 }
 
 export type TAppState = {
+  userVoiceHistory: THistory[];
   generatedAudio: string | null;
   voices: Voice[];
   selectedVoice: Voice | null;
@@ -14,4 +15,5 @@ export type TAppState = {
   audioAnnotations: {
     [time: number]: AudioAnnotation[];
   };
+  historyItemAudios: Record<string, string>;
 };
