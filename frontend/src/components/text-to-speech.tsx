@@ -2,6 +2,7 @@
 import { ButtonIcon } from '@/components/ui/button-icon';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import { useCreateVoiceHistory } from '@/lib/api/hooks/useCreateVoiceHistory';
 import { useGenerateTextToSpeechMutation } from '@/lib/api/hooks/useGenerateTextToSpeech';
 import {
   GenerateSpeechSchema,
@@ -23,6 +24,12 @@ export default function TextToSpeech() {
     isSuccess: isAudioGenerated,
   } = useGenerateTextToSpeechMutation(selectedVoice?.voice_id as string);
 
+  const {
+    mutateAsync: createVoiceHistory,
+    isLoading: isAddingVoiceHistory,
+    error: voiceHistoryError,
+  } = useCreateVoiceHistory();
+
   const form = useForm<TGenerateSpeechSchema>({
     resolver: zodResolver(GenerateSpeechSchema),
   });
@@ -36,9 +43,18 @@ export default function TextToSpeech() {
       toast.error('Please enter some text');
       return;
     }
-    await generateSpeech(data);
-  }
+    // await generateSpeech(data);
 
+    const voiceHistoryPayload = {
+      text: data.text,
+      voice_id: selectedVoice.voice_id,
+      tex: selectedVoice.name,
+      voice_name: selectedVoice.name,
+      voice_category: selectedVoice.category,
+    };
+
+    await createVoiceHistory(voiceHistoryPayload);
+  }
   const disableFormSubmission = isGeneratingSpeech;
 
   return (
@@ -75,7 +91,11 @@ export default function TextToSpeech() {
                   type="submit"
                   variant={'default'}
                   className="min-w-32 rounded-full"
-                  state={isGeneratingSpeech ? 'loading' : 'default'}
+                  state={
+                    isGeneratingSpeech || isAddingVoiceHistory
+                      ? 'loading'
+                      : 'default'
+                  }
                 >
                   Generate
                 </ButtonIcon>
