@@ -2,10 +2,12 @@ import { Badge } from '@/components/ui/badge';
 import { ButtonIcon } from '@/components/ui/button-icon';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useDeleteAnnotationMutation } from '@/lib/api/hooks/useAnnotations';
 import { TAnnotation } from '@/lib/db/schema';
 import { cn, getRandomColor } from '@/lib/utils';
+import { useAppStore } from '@/redux/hooks';
 import { AudioAnnotation } from '@/types/redux/app-state';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.js';
 import { Skeleton } from './ui/skeleton';
@@ -27,11 +29,20 @@ function AnnotationManager({
   isFetchingAnnotations,
   isAddingAnnotation,
 }: AnnotationManagerProps) {
+  const { audioHref: audioVersionId } = useAppStore();
   const [newAnnotation, setNewAnnotation] = useState('');
   const [hoveredAnnotation, setHoveredAnnotation] = useState<number | null>(
     null
   );
   const [activeAnnotation, setActiveAnnotation] = useState<number | null>(null);
+
+  const { mutateAsync: deleteAnnotation } = useDeleteAnnotationMutation(
+    audioVersionId as string
+  );
+
+  const handleDeleteAnnotation = (annotationId: string) => {
+    deleteAnnotation(annotationId);
+  };
 
   const handleAddAnnotation = useCallback(() => {
     if (newAnnotation.trim()) {
@@ -155,15 +166,30 @@ function AnnotationManager({
                         const annotation = annotations.find((a) => a.id === id);
                         if (!annotation) return null;
                         return (
-                          <div key={annotation.id} className="w-full">
+                          <div
+                            key={annotation.id}
+                            className="flex w-full items-center justify-between gap-2"
+                          >
                             <div className="line-clamp-2 text-sm text-gray-700 hover:line-clamp-none hover:cursor-pointer">
                               {annotation.text}
+                            </div>
+                            <div>
+                              <ButtonIcon
+                                variant={'outline'}
+                                size={'sm'}
+                                icon={Trash2}
+                                className="size-8 p-1"
+                                onClick={() =>
+                                  handleDeleteAnnotation(annotation.id)
+                                }
+                              />
                             </div>
                           </div>
                         );
                       }
                     )}
                   </div>
+
                   <div className="flex w-full items-center justify-between gap-2">
                     <div>Timeframe:</div>
                     <Badge className="mt-auto px-4">

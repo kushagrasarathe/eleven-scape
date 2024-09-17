@@ -1,4 +1,8 @@
-import { ANNOTATIONS, CREATE_ANNOTATION } from '@/lib/constants';
+import {
+  ANNOTATIONS,
+  CREATE_ANNOTATION,
+  DELETE_ANNOTATION,
+} from '@/lib/constants';
 import { TAnnotation } from '@/lib/db/schema';
 import { _1Min } from '@/redux/constants/time';
 import { useAppDispatch } from '@/redux/hooks';
@@ -72,6 +76,36 @@ export const useAddAnnotationMutation = (audioVersionId: string) => {
   return useMutation({
     mutationKey: [CREATE_ANNOTATION],
     mutationFn: createAnnotation,
+    onSuccess,
+    onError,
+    retry: 0,
+  });
+};
+
+export const useDeleteAnnotationMutation = (audioVersionId: string) => {
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
+
+  const deleteAnnotation = async (annotationId: string) => {
+    const { data } = await axios.delete<{ message: string }>(
+      `/api/annotations?audioVersionId=${audioVersionId}&annotationId=${annotationId}`
+    );
+    return data;
+  };
+
+  function onSuccess(resp: { message: string }) {
+    toast.success('Annotation deleted successfully');
+    queryClient.invalidateQueries([ANNOTATIONS]);
+  }
+
+  function onError(error: AxiosError) {
+    console.error('Error deleting annotation:', error);
+    toast.error('Failed to delete annotation');
+  }
+
+  return useMutation({
+    mutationKey: [DELETE_ANNOTATION],
+    mutationFn: deleteAnnotation,
     onSuccess,
     onError,
     retry: 0,
