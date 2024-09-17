@@ -1,25 +1,28 @@
 'use client';
-import { Loading } from '@/components/loading';
 import WaveAudioPlayer from '@/components/wave-audio-player';
-import { useFetchHistoryItemAudio } from '@/lib/api/hooks/useFetchHistoryItemAudio';
 import { useAppStore } from '@/redux/hooks';
-import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function AudioHistoryPage() {
-  const { historyItemAudios } = useAppStore();
-  const path = usePathname();
-  const audioId = path.split('/').pop() as string;
-  const { data, isFetching } = useFetchHistoryItemAudio(audioId, !!audioId);
+  const { historyItemAudios, audioHref } = useAppStore();
+  const router = useRouter();
 
-  const audio = historyItemAudios[audioId];
+  useEffect(() => {
+    if (!audioHref) {
+      router.push('/');
+    }
+  }, [audioHref, router]);
 
-  if (isFetching) {
-    return <Loading />;
+  if (!audioHref) {
+    return <div>Loading...</div>;
   }
+
+  const audio = historyItemAudios[audioHref];
 
   return (
     <div>
-      <WaveAudioPlayer audio={audio} audioVersionId={audioId} />
+      <WaveAudioPlayer audio={audio} audioVersionId={audioHref} />
     </div>
   );
 }

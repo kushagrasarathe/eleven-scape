@@ -12,10 +12,12 @@ import {
 } from '@/components/ui/table';
 import { useFetchUserGeneratedVoices } from '@/lib/api/hooks/useFetchUserGeneratedVoices';
 import { formatDateToVerboseString } from '@/lib/utils';
-import { useAppStore } from '@/redux/hooks';
+import { useAppDispatch, useAppStore } from '@/redux/hooks';
+import { appActions } from '@/redux/slices/app-slice';
 import Link from 'next/link';
 
 export default function ListUserGeneratedVoices() {
+  const dispatch = useAppDispatch();
   const { userVoiceHistory } = useAppStore();
 
   const { data, isLoading, isFetching, isError } =
@@ -87,6 +89,9 @@ export default function ListUserGeneratedVoices() {
                   <Link
                     href={`/history/${voice.history_item_id}`}
                     className="line-clamp-1 max-w-md"
+                    onClick={() =>
+                      dispatch(appActions.setAudioHref(voice.history_item_id))
+                    }
                   >
                     {voice.text}
                   </Link>

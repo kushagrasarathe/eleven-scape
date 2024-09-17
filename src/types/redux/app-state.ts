@@ -12,6 +12,7 @@ export interface Annotation {
 }
 
 export type TAppState = {
+  audioHref: string | null;
   userVoiceHistory: THistory[];
   latestGeneratedAudioId: string | null;
   generatedAudio: string | null;

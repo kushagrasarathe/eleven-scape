@@ -13,11 +13,7 @@ export default function Footer() {
         >
           @kushagrasarathe
         </Link>
-      </div>
-      <div className="mx-auto max-w-lg">
-        Developed as a proof-of-concept, showcasing my full-stack developement
-        skills and my interest in joining the{' '}
-        <span className="font-semibold">ElevenLabs</span> team
+        <div>&nbsp;👨🏻‍💻</div>
       </div>
     </div>
   );

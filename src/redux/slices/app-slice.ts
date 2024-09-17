@@ -5,6 +5,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { APP } from '../constants';
 
 const initialState: TAppState = {
+  audioHref: null,
   userVoiceHistory: [],
   voices: [],
   generatedAudio: null,
@@ -19,6 +20,10 @@ const appSlice = createSlice({
   name: APP,
   initialState,
   reducers: {
+    setAudioHref: (state, action: PayloadAction<string | null>) => {
+      state.audioHref = action.payload;
+    },
+
     setUserVoiceHistory: (state, action: PayloadAction<THistory[]>) => {
       return {
         ...state,

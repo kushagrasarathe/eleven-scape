@@ -8,7 +8,7 @@ import { _1Min } from '../../../redux/constants/time';
 
 export const useFetchHistoryItemAudio = (
   history_id: string,
-  dependsOn = true
+  dependsOn?: boolean
 ) => {
   const dispatch = useAppDispatch();
 

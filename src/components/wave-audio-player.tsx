@@ -10,7 +10,7 @@ import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.js';
 import WaveFormPlayer from './wave-form-player';
 
 interface WaveAudioPlayerProps {
-  audio: string | Blob;
+  audio: string | Blob | null;
   audioVersionId: string;
 }
 
@@ -44,6 +44,10 @@ function WaveAudioPlayer({ audio, audioVersionId }: WaveAudioPlayerProps) {
   const handleRegionsUpdated = useCallback((updatedRegions: RegionsPlugin) => {
     setRegions(updatedRegions);
   }, []);
+
+  if (!audio) {
+    return null;
+  }
 
   return (
     <div className="space-y-5">
