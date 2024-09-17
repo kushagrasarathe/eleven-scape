@@ -143,12 +143,12 @@ function AnnotationManager({
         {sortedAnnotations.length > 0 ? (
           <div className="space-y-2">
             <div className="text-lg font-semibold">Annotations</div>
-            <div className="grid grid-cols-4 gap-4 *:col-span-1">
+            <div className="col-span-full grid w-full grid-cols-4 gap-4 *:col-span-full md:*:col-span-1">
               {sortedAnnotations.map(([timeframe, annotations]) => (
                 <Card
                   key={timeframe}
                   className={cn(
-                    'flex min-w-64 transform flex-col items-start justify-between space-y-3 rounded px-2 py-3 transition-all ease-in-out',
+                    'group flex min-h-24 w-full min-w-64 transform flex-col items-start justify-between space-y-3 rounded px-2 py-3 transition-all ease-in-out',
                     hoveredAnnotation === parseFloat(timeframe) ||
                       (!hoveredAnnotation &&
                         activeAnnotation === parseFloat(timeframe))
@@ -168,22 +168,20 @@ function AnnotationManager({
                         return (
                           <div
                             key={annotation.id}
-                            className="flex w-full items-center justify-between gap-2"
+                            className="flex w-full items-start justify-between gap-2"
                           >
                             <div className="line-clamp-2 text-sm text-gray-700 hover:line-clamp-none hover:cursor-pointer">
                               {annotation.text}
                             </div>
-                            <div>
-                              <ButtonIcon
-                                variant={'outline'}
-                                size={'sm'}
-                                icon={Trash2}
-                                className="size-8 p-1"
-                                onClick={() =>
-                                  handleDeleteAnnotation(annotation.id)
-                                }
-                              />
-                            </div>
+                            <ButtonIcon
+                              variant={'outline'}
+                              size={'sm'}
+                              icon={Trash2}
+                              className="hidden size-8 p-1 group-hover:flex"
+                              onClick={() =>
+                                handleDeleteAnnotation(annotation.id)
+                              }
+                            />
                           </div>
                         );
                       }
@@ -206,7 +204,7 @@ function AnnotationManager({
           </div>
         )}
       </div>
-      <div className="grid grid-cols-4 gap-4 *:col-span-1">
+      <div className="col-span-full grid w-full grid-cols-4 gap-4 *:col-span-full md:*:col-span-1">
         {isFetchingAnnotations &&
           Array.from({ length: 8 }).map((_, i) => (
             <div>

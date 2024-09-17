@@ -81,31 +81,39 @@ export default function ListUserGeneratedVoices() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {userVoiceHistory.map((voice, idx) => (
-              <TableRow key={idx} className="">
-                <TableCell>{idx + 1}</TableCell>
+            {!!userVoiceHistory.length ? (
+              userVoiceHistory.map((voice, idx) => (
+                <TableRow key={idx} className="">
+                  <TableCell>{idx + 1}</TableCell>
 
-                <TableCell className="font-normal">
-                  <Link
-                    href={`/history/${voice.history_item_id}`}
-                    className="line-clamp-1 max-w-md"
-                    onClick={() =>
-                      dispatch(appActions.setAudioHref(voice.history_item_id))
-                    }
-                  >
-                    {voice.text}
-                  </Link>
-                </TableCell>
-                <TableCell>{voice.voice_name}</TableCell>
-                <TableCell className="text-right">
-                  {voice.date_unix
-                    ? formatDateToVerboseString(
-                        new Date(voice.date_unix * 1000)
-                      )
-                    : ''}
+                  <TableCell className="font-normal">
+                    <Link
+                      href={`/history/${voice.history_item_id}`}
+                      className="line-clamp-1 max-w-md"
+                      onClick={() =>
+                        dispatch(appActions.setAudioHref(voice.history_item_id))
+                      }
+                    >
+                      {voice.text}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{voice.voice_name}</TableCell>
+                  <TableCell className="text-right">
+                    {voice.date_unix
+                      ? formatDateToVerboseString(
+                          new Date(voice.date_unix * 1000)
+                        )
+                      : ''}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow className="">
+                <TableCell colSpan={4} className="tex text-sm text-gray-400">
+                  Generated speeches will appear here
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </Card>
