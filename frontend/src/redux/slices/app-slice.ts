@@ -57,14 +57,26 @@ const appSlice = createSlice({
       if (!state.allAnnotations[audioId]) {
         state.allAnnotations[audioId] = {};
       }
+      const updatedAnnotations: Record<number, TAnnotation[]> = {};
 
       annotations.forEach((annotation) => {
         const timeframe = parseFloat(annotation.annotationTimeframe);
-        if (!state.allAnnotations[audioId][timeframe]) {
-          state.allAnnotations[audioId][timeframe] = [];
+        if (!updatedAnnotations[timeframe]) {
+          updatedAnnotations[timeframe] = [];
         }
-        state.allAnnotations[audioId][timeframe].push(annotation);
+
+        const existingIndex = updatedAnnotations[timeframe].findIndex(
+          (a) => a.id === annotation.id
+        );
+
+        if (existingIndex === -1) {
+          updatedAnnotations[timeframe].push(annotation);
+        } else {
+          updatedAnnotations[timeframe][existingIndex] = annotation;
+        }
       });
+
+      state.allAnnotations[audioId] = updatedAnnotations;
     },
 
     setHistoryItemAudios: (

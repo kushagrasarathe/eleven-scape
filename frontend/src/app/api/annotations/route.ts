@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('Received body:', body);
 
     if (
       !body.audio_version_id ||
@@ -26,13 +25,11 @@ export async function POST(request: Request) {
       annotationTimeframe: body.annotationTimeframe,
       text: body.text,
     };
-    console.log('Prepared annotation data:', annotationData);
 
     const result = await db
       .insert(annotations)
       .values(annotationData)
       .returning();
-    console.log('Insert result:', result);
 
     return NextResponse.json(result[0], { status: 201 });
   } catch (error) {
