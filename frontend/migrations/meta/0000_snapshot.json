@@ -1,17 +1,29 @@
 {
-  "id": "2ad58cfc-d08e-4d9d-92e4-4d135568d8e3",
+  "id": "196b1e05-94f8-4b1a-8b1a-d24609620a1f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.history_table": {
-      "name": "history_table",
+    "public.annotations": {
+      "name": "annotations",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
+          "notNull": true
+        },
+        "audio_version_id": {
+          "name": "audio_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp",
+          "primaryKey": false,
           "notNull": true
         },
         "text": {
@@ -20,21 +32,126 @@
           "primaryKey": false,
           "notNull": true
         },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "audio_version_id_idx": {
+          "name": "audio_version_id_idx",
+          "columns": [
+            {
+              "expression": "audio_version_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "audio_version_timestamp_idx": {
+          "name": "audio_version_timestamp_idx",
+          "columns": [
+            {
+              "expression": "audio_version_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "timestamp",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "annotations_audio_version_id_audio_versions_id_fk": {
+          "name": "annotations_audio_version_id_audio_versions_id_fk",
+          "tableFrom": "annotations",
+          "tableTo": "audio_versions",
+          "columnsFrom": [
+            "audio_version_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.audio_versions": {
+      "name": "audio_versions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
         "voice_id": {
           "name": "voice_id",
-          "type": "varchar(255)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "voice_name": {
           "name": "voice_name",
-          "type": "varchar(255)",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "text": {
+          "name": "text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date_created": {
+          "name": "date_created",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "parent_version_id": {
+          "name": "parent_version_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
-        "voice_category": {
-          "name": "voice_category",
-          "type": "varchar(255)",
+        "is_latest": {
+          "name": "is_latest",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eleven_labs_history_item_id": {
+          "name": "eleven_labs_history_item_id",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         }
@@ -42,22 +159,7 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "history_table_voice_id_unique": {
-          "name": "history_table_voice_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "voice_id"
-          ]
-        },
-        "history_table_voice_name_unique": {
-          "name": "history_table_voice_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "voice_name"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     }
   },
   "enums": {},

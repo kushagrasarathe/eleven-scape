@@ -17,6 +17,7 @@ import Link from 'next/link';
 
 export default function ListUserGeneratedVoices() {
   const { userVoiceHistory } = useAppStore();
+  // const { data, isLoading, isFetching, isError } = useFetchVoiceHistory();
   const { data, isLoading, isFetching, isError } =
     useFetchUserGeneratedVoices();
 
@@ -98,8 +99,7 @@ export default function ListUserGeneratedVoices() {
                       )
                     : ''}
                 </TableCell>
-                {/* 
-            <TableCell className="text-right">$250.00</TableCell> */}
+                <TableCell>{voice.request_id}</TableCell>
               </TableRow>
             ))}
           </TableBody>

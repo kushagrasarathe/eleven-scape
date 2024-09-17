@@ -48,7 +48,7 @@ export default function SelectVoice() {
   };
 
   return (
-    <div className="relative w-8/12 max-w-[450px]">
+    <div className="relative w-4/12 max-w-[450px]">
       <Select
         value={selectedVoice?.voice_id}
         onValueChange={(val) => {

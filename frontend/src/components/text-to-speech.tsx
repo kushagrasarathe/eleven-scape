@@ -43,19 +43,29 @@ export default function TextToSpeech() {
       toast.error('Please enter some text');
       return;
     }
-    // await generateSpeech(data);
 
-    const voiceHistoryPayload = {
-      text: data.text,
-      voice_id: selectedVoice.voice_id,
-      tex: selectedVoice.name,
-      voice_name: selectedVoice.name,
-      voice_category: selectedVoice.category,
-    };
+    try {
+      const generateSpeechResult = await generateSpeech(data);
 
-    await createVoiceHistory(voiceHistoryPayload);
+      const historyItemId = generateSpeechResult.headers['history-item-id'];
+
+      const voiceHistoryData = {
+        id: crypto.randomUUID(),
+        voice_id: selectedVoice.voice_id,
+        voice_name: selectedVoice.name,
+        text: data.text,
+        version: 1,
+        is_latest: true,
+        eleven_labs_history_item_id: historyItemId,
+      };
+
+      await createVoiceHistory(voiceHistoryData);
+    } catch (error) {
+      console.error('Error in text-to-speech process:', error);
+      toast.error('An error occurred during the text-to-speech process');
+    }
   }
-  const disableFormSubmission = isGeneratingSpeech;
+  const isProcessingRequest = isGeneratingSpeech || isAddingVoiceHistory;
 
   return (
     <div className="space-y-8">
@@ -87,20 +97,16 @@ export default function TextToSpeech() {
                 <SelectVoice />
 
                 <ButtonIcon
-                  disabled={disableFormSubmission}
+                  disabled={isProcessingRequest}
                   type="submit"
                   variant={'default'}
                   className="min-w-32 rounded-full"
-                  state={
-                    isGeneratingSpeech || isAddingVoiceHistory
-                      ? 'loading'
-                      : 'default'
-                  }
+                  state={isProcessingRequest ? 'loading' : 'default'}
                 >
                   Generate
                 </ButtonIcon>
               </div>
-              {isAudioGenerated && !isGeneratingSpeech && generatedAudio && (
+              {/* {isAudioGenerated && !isGeneratingSpeech && generatedAudio && (
                 <div className="bg-response-body flex h-full items-center rounded-b-xl p-12">
                   <audio
                     controls={true}
@@ -108,7 +114,7 @@ export default function TextToSpeech() {
                     src={generatedAudio}
                   ></audio>
                 </div>
-              )}
+              )} */}
             </div>
           </form>
         </Form>

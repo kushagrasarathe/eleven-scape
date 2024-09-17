@@ -87,21 +87,6 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
     }
   }, [audio, zoom]);
 
-  useEffect(() => {
-    initializeWaveSurfer();
-    return () => {
-      if (wavesurferRef.current) {
-        wavesurferRef.current.destroy();
-      }
-    };
-  }, [initializeWaveSurfer]);
-
-  useEffect(() => {
-    if (audioReady && wavesurferRef.current && wavesurferRef.current?.zoom) {
-      wavesurferRef.current?.zoom(zoom);
-    }
-  }, [zoom, audioReady]);
-
   const handlePlayPause = useCallback(() => {
     if (audioReady && wavesurferRef.current) {
       wavesurferRef.current.playPause();
@@ -147,6 +132,21 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
     },
     [dispatch]
   );
+
+  useEffect(() => {
+    initializeWaveSurfer();
+    return () => {
+      if (wavesurferRef.current) {
+        wavesurferRef.current.destroy();
+      }
+    };
+  }, [initializeWaveSurfer]);
+
+  useEffect(() => {
+    if (audioReady && wavesurferRef.current && !!wavesurferRef.current?.zoom) {
+      wavesurferRef.current?.zoom(zoom!);
+    }
+  }, [zoom, audioReady]);
 
   return (
     <div className="space-y-5">

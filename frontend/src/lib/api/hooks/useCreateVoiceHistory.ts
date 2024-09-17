@@ -1,14 +1,16 @@
-import { CREATE_VOICE_HISTORY } from '@/lib/constants';
-import { InsertVoiceHistory, SelectVoiceHistory } from '@/lib/db/schema';
+import { CREATE_VOICE_HISTORY, USER_GENERATED_VOICES } from '@/lib/constants';
+import { SelectVoiceHistory, TAudioVersions } from '@/lib/db/schema';
 import { useAppDispatch } from '@/redux/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
 
 export const useCreateVoiceHistory = () => {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
-  const addVoiceHistory = async (payload: InsertVoiceHistory) => {
+  const addVoiceHistory = async (payload: TAudioVersions) => {
     const { data } = await axios.post<SelectVoiceHistory>(
       '/api/voice-history',
       payload
@@ -16,13 +18,18 @@ export const useCreateVoiceHistory = () => {
     return data;
   };
 
-  function onSuccess(resp: any) {
-    queryClient.invalidateQueries({ queryKey: [CREATE_VOICE_HISTORY] });
-    console.log(resp);
+  function onSuccess(resp: SelectVoiceHistory) {
+    queryClient.invalidateQueries({
+      queryKey: [CREATE_VOICE_HISTORY, USER_GENERATED_VOICES],
+    });
+
+    if (resp.eleven_labs_history_item_id) {
+      router.push(`/history/${resp.eleven_labs_history_item_id}`);
+    }
   }
 
   function onError(error: AxiosError) {
-    console.error('Error generating speech:', error);
+    console.error('Error creating voice history:', error);
   }
 
   return useMutation({

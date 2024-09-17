@@ -8,6 +8,7 @@ export interface AudioAnnotation {
 
 export type TAppState = {
   userVoiceHistory: THistory[];
+  latestGeneratedAudioId: string | null;
   generatedAudio: string | null;
   voices: Voice[];
   selectedVoice: Voice | null;

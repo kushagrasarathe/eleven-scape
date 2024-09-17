@@ -4,13 +4,13 @@ import { TGenerateSpeechSchema } from '@/lib/validations/generate-speech';
 import { useAppDispatch } from '@/redux/hooks';
 import { appActions } from '@/redux/slices/app-slice';
 import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 export const useGenerateTextToSpeechMutation = (voice_id: string) => {
   const dispatch = useAppDispatch();
 
   const generateTextToSpeech = async (payload: TGenerateSpeechSchema) => {
-    const { data } = await axios.post(
+    const response: AxiosResponse<ArrayBuffer> = await axios.post(
       `https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`,
       JSON.stringify(payload),
       {
@@ -19,13 +19,21 @@ export const useGenerateTextToSpeechMutation = (voice_id: string) => {
       }
     );
 
-    return data;
+    return {
+      data: response.data,
+      headers: response.headers,
+    };
   };
 
-  function onSuccess(resp: ArrayBuffer) {
-    const blob = new Blob([resp], { type: 'audio/mpeg' });
+  function onSuccess(resp: { data: ArrayBuffer; headers: any }) {
+    const blob = new Blob([resp.data], { type: 'audio/mpeg' });
     const audioUrl = URL.createObjectURL(blob);
     dispatch(appActions.setGeneratedAudio(audioUrl));
+
+    const historyItemId = resp.headers['history-item-id'];
+    if (historyItemId) {
+      dispatch(appActions.setLatestGeneratedAudioId(historyItemId));
+    }
   }
 
   function onError(error: AxiosError) {

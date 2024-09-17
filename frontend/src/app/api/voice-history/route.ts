@@ -1,12 +1,12 @@
 import { db } from '@/lib/db';
-import { historyTable, InsertVoiceHistory } from '@/lib/db/schema';
+import { audioVersions, TAudioVersions } from '@/lib/db/schema';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const body: InsertVoiceHistory = await request.json();
+    const body: TAudioVersions = await request.json();
 
-    const result = await db.insert(historyTable).values(body).returning();
+    const result = await db.insert(audioVersions).values(body).returning();
 
     return NextResponse.json(result[0], { status: 201 });
   } catch (error) {
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const result = await db.select().from(historyTable);
+    const result = await db.select().from(audioVersions);
     return NextResponse.json(result);
   } catch (error) {
     console.error('Error fetching voice history:', error);

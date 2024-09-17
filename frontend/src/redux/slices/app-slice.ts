@@ -7,6 +7,7 @@ const initialState: TAppState = {
   userVoiceHistory: [],
   voices: [],
   generatedAudio: null,
+  latestGeneratedAudioId: null,
   selectedVoice: null,
   currentlyPlayingId: null,
   audioAnnotations: {},
@@ -33,6 +34,10 @@ const appSlice = createSlice({
 
     setGeneratedAudio(state, action: PayloadAction<string>) {
       state.generatedAudio = action.payload;
+    },
+
+    setLatestGeneratedAudioId(state, action: PayloadAction<string>) {
+      state.latestGeneratedAudioId = action.payload;
     },
 
     setSelectedVoice: (state, action: PayloadAction<Voice | null>) => {
