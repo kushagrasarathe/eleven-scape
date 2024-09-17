@@ -1,0 +1,159 @@
+{
+  "id": "df1c74e9-673d-40e8-8f5f-120140efadc8",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.annotations": {
+      "name": "annotations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "audio_version_id": {
+          "name": "audio_version_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "annotationTimeframe": {
+          "name": "annotationTimeframe",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "text": {
+          "name": "text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "audio_version_id_idx": {
+          "name": "audio_version_id_idx",
+          "columns": [
+            {
+              "expression": "audio_version_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "audio_version_timestamp_idx": {
+          "name": "audio_version_timestamp_idx",
+          "columns": [
+            {
+              "expression": "audio_version_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "annotationTimeframe",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.audio_versions": {
+      "name": "audio_versions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "voice_id": {
+          "name": "voice_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "voice_name": {
+          "name": "voice_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "text": {
+          "name": "text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date_created": {
+          "name": "date_created",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "parent_version_id": {
+          "name": "parent_version_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_latest": {
+          "name": "is_latest",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eleven_labs_history_item_id": {
+          "name": "eleven_labs_history_item_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
