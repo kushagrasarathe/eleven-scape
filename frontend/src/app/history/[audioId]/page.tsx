@@ -19,7 +19,7 @@ export default function AudioHistoryPage() {
 
   return (
     <div>
-      <WaveAudioPlayer audio={audio} />
+      <WaveAudioPlayer audio={audio} audioVersionId={audioId} />
     </div>
   );
 }

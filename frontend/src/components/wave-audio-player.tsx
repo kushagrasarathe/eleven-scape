@@ -1,6 +1,9 @@
 import { AnnotationManager } from '@/app/history/[audioId]/annotaion-manager';
+import {
+  useAddAnnotationMutation,
+  useFetchAnnotations,
+} from '@/lib/api/hooks/useAnnotations';
 import { useAppStore } from '@/redux/hooks';
-import { appActions } from '@/redux/slices/app-slice';
 import { AudioAnnotation } from '@/types/redux/app-state';
 import {
   Loader2,
@@ -20,11 +23,15 @@ import { Slider } from './ui/slider';
 
 interface WaveAudioPlayerProps {
   audio: string | Blob;
+  audioVersionId: string;
 }
 
-export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
+export default function WaveAudioPlayer({
+  audio,
+  audioVersionId,
+}: WaveAudioPlayerProps) {
   const dispatch = useDispatch();
-  const { audioAnnotations } = useAppStore();
+  const { allAnnotations } = useAppStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const wavesurferRef = useRef<WaveSurfer | null>(null);
   const regionsRef = useRef<RegionsPlugin | null>(null);
@@ -34,6 +41,12 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
   const [error, setError] = useState<string | null>(null);
   const [audioReady, setAudioReady] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const audioAnnotations = allAnnotations[audioVersionId] || [];
+
+  const { mutateAsync: addAnnotation, isLoading: isAddingAnnotation } =
+    useAddAnnotationMutation(audioVersionId);
+  const { data, isLoading: isFetchingAnnotations } =
+    useFetchAnnotations(audioVersionId);
 
   const initializeWaveSurfer = useCallback(async () => {
     setLoading(true);
@@ -108,27 +121,7 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
 
   const handleAnnotationAdded = useCallback(
     (annotation: AudioAnnotation) => {
-      dispatch(appActions.addAudioAnnotation(annotation));
-    },
-    [dispatch]
-  );
-
-  const handleAnnotationUpdated = useCallback(
-    (annotation: AudioAnnotation) => {
-      dispatch(
-        appActions.removeAudioAnnotation({
-          time: annotation.time,
-          id: annotation.id,
-        })
-      );
-      dispatch(appActions.addAudioAnnotation(annotation));
-    },
-    [dispatch]
-  );
-
-  const handleAnnotationDeleted = useCallback(
-    (time: number, id: string) => {
-      dispatch(appActions.removeAudioAnnotation({ time, id }));
+      addAnnotation(annotation);
     },
     [dispatch]
   );
@@ -147,6 +140,46 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
       wavesurferRef.current?.zoom(zoom!);
     }
   }, [zoom, audioReady]);
+
+  useEffect(() => {
+    if (audioReady && wavesurferRef.current && regionsRef.current) {
+      regionsRef.current.clearRegions();
+
+      Object.entries(audioAnnotations).forEach(([timeframe, annotations]) => {
+        const region = regionsRef.current!.addRegion({
+          start: parseFloat(timeframe),
+          end: parseFloat(timeframe) + 0.1,
+          color: 'rgba(0, 123, 255, 0.3)',
+          drag: false,
+          resize: false,
+        });
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'annotation-tooltip';
+        tooltip.style.cssText = `
+          position: absolute;
+          bottom: 100%;
+          left: 0;
+          background-color: rgba(0, 0, 0, 0.7);
+          color: white;
+          padding: 5px;
+          border-radius: 3px;
+          font-size: 12px;
+          white-space: nowrap;
+          display: none;
+        `;
+        tooltip.innerHTML = annotations.map((a: any) => a.text).join('<br>');
+
+        region.element.appendChild(tooltip);
+        region.element.addEventListener('mouseenter', () => {
+          tooltip.style.display = 'block';
+        });
+        region.element.addEventListener('mouseleave', () => {
+          tooltip.style.display = 'none';
+        });
+      });
+    }
+  }, [audioReady, audioAnnotations]);
 
   return (
     <div className="space-y-5">
@@ -194,8 +227,6 @@ export default function WaveAudioPlayer({ audio }: WaveAudioPlayerProps) {
         regions={regionsRef.current}
         audioAnnotations={audioAnnotations}
         onAnnotationAdded={handleAnnotationAdded}
-        onAnnotationUpdated={handleAnnotationUpdated}
-        onAnnotationDeleted={handleAnnotationDeleted}
       />
     </div>
   );

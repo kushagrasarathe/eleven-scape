@@ -1,4 +1,5 @@
-import { AudioAnnotation, TAppState } from '@/types/redux/app-state';
+import { TAnnotation } from '@/lib/db/schema';
+import { TAppState } from '@/types/redux/app-state';
 import { THistory, Voice } from '@/types/server';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { APP } from '../constants';
@@ -10,7 +11,7 @@ const initialState: TAppState = {
   latestGeneratedAudioId: null,
   selectedVoice: null,
   currentlyPlayingId: null,
-  audioAnnotations: {},
+  allAnnotations: {},
   historyItemAudios: {},
 };
 
@@ -48,27 +49,22 @@ const appSlice = createSlice({
       state.currentlyPlayingId = action.payload;
     },
 
-    addAudioAnnotation: (state, action: PayloadAction<AudioAnnotation>) => {
-      const { id, time, text } = action.payload;
-      if (!state.audioAnnotations[time]) {
-        state.audioAnnotations[time] = [];
-      }
-      state.audioAnnotations[time].push({ id, text, time });
-    },
-
-    removeAudioAnnotation: (
+    setAllAnnotations: (
       state,
-      action: PayloadAction<{ time: number; id: string }>
+      action: PayloadAction<{ audioId: string; annotations: TAnnotation[] }>
     ) => {
-      const { time, id } = action.payload;
-      if (state.audioAnnotations[time]) {
-        state.audioAnnotations[time] = state.audioAnnotations[time].filter(
-          (annotation) => annotation.id !== id
-        );
-        if (state.audioAnnotations[time].length === 0) {
-          delete state.audioAnnotations[time];
-        }
+      const { audioId, annotations } = action.payload;
+      if (!state.allAnnotations[audioId]) {
+        state.allAnnotations[audioId] = {};
       }
+
+      annotations.forEach((annotation) => {
+        const timeframe = parseFloat(annotation.annotationTimeframe);
+        if (!state.allAnnotations[audioId][timeframe]) {
+          state.allAnnotations[audioId][timeframe] = [];
+        }
+        state.allAnnotations[audioId][timeframe].push(annotation);
+      });
     },
 
     setHistoryItemAudios: (

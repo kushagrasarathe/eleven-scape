@@ -1,9 +1,14 @@
+import { TAnnotation } from '@/lib/db/schema';
 import { THistory, Voice } from '../server';
 
 export interface AudioAnnotation {
   id: string;
-  time: number;
   text: string;
+  annotationTimeframe: number;
+}
+
+export interface Annotation {
+  [time: number]: TAnnotation[];
 }
 
 export type TAppState = {
@@ -13,8 +18,6 @@ export type TAppState = {
   voices: Voice[];
   selectedVoice: Voice | null;
   currentlyPlayingId: string | null;
-  audioAnnotations: {
-    [time: number]: AudioAnnotation[];
-  };
+  allAnnotations: { [audioId: string]: Annotation };
   historyItemAudios: Record<string, string>;
 };
